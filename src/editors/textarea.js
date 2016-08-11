@@ -8,8 +8,8 @@ Form.editors.TextArea = Form.editors.Text.extend({
   /**
    * Override Text constructor so type property isn't set (issue #261)
    */
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
   }
 
 });

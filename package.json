@@ -4,20 +4,25 @@
   "author": {
     "name": "Charles Davison"
   },
-  "version": "0.14.0",
+  "version": "0.15.0",
   "dependencies": {
-    "backbone": "~1.1.2"
+    "backbone": "~1.3.3"
   },
   "devDependencies": {
+    "@kahwee/backbone-deep-model": "^2.0.2",
+    "browserify": "~13.1.0",
     "buildify": "~0.4.0",
-    "underscore": "~1.5.2",
-    "uglify-js": "~2.4.11",
-    "jquery": "~2.1.0",
-    "browserify": "~3.38.0"
+    "jquery": "~3.1.0",
+    "qunitjs": "^2.0.1",
+    "sinon": "^1.17.5",
+    "uglify-js": "~2.7.0",
+    "underscore": "~1.8.3"
   },
   "main": "distribution.amd/backbone-forms.js",
   "browser": "distribution/backbone-forms.js",
   "scripts": {
-    "test": "open test/index.html"
+    "test": "start test/index.html",
+    "build": "node scripts/build",
+    "dev": "npm run build && npm run test"
   }
 }

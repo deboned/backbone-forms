@@ -11,7 +11,7 @@ Form.editors.Text = Form.Editor.extend({
 
   previousValue: '',
 
-  events: {
+  _defaultEvents: {
     'keyup':    'determineChange',
     'keypress': function(event) {
       var self = this;
@@ -30,8 +30,8 @@ Form.editors.Text = Form.Editor.extend({
     }
   },
 
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     var schema = this.schema;
 

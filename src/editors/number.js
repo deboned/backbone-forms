@@ -7,13 +7,13 @@ Form.editors.Number = Form.editors.Text.extend({
 
   defaultValue: 0,
 
-  events: _.extend({}, Form.editors.Text.prototype.events, {
+  _defaultEvents: _.extend({}, Form.editors.Text.prototype._defaultEvents, {
     'keypress': 'onKeyPress',
     'change': 'onKeyPress'
   }),
 
-  initialize: function(options) {
-    Form.editors.Text.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     var schema = this.schema;
 

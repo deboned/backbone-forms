@@ -1,40 +1,42 @@
 ;(function(Form, Editor) {
 
-  module('Date', {
-    setup: function() {
+  // var ok = assert.ok
+
+  QUnit.module('Date', {
+    beforeEach: function() {
       this.sinon = sinon.sandbox.create();
     },
 
-    teardown: function() {
+    afterEach: function() {
       this.sinon.restore();
     }
   });
 
 
-  var same = deepEqual;
+  // var same = assert.deepEqual;
 
 
-  test('initialize() - casts values to date', function() {
+  QUnit.test('initialize() - casts values to date', function(assert) {
     var date = new Date(2000, 0, 1);
 
     var editor = new Editor({ value: date.toString() });
 
-    same(editor.value.constructor.name, 'Date');
-    same(editor.value.getTime(), date.getTime());
+    assert.deepEqual(editor.value.constructor.name, 'Date');
+    assert.deepEqual(editor.value.getTime(), date.getTime());
   });
 
-  test('initialize() - default value - today', function() {
+  QUnit.test('initialize() - default value - today', function(assert) {
     var editor = new Editor;
 
     var today = new Date,
         value = editor.value;
 
-    same(value.getFullYear(), today.getFullYear());
-    same(value.getMonth(), today.getMonth());
-    same(value.getDate(), today.getDate());
+    assert.deepEqual(value.getFullYear(), today.getFullYear());
+    assert.deepEqual(value.getMonth(), today.getMonth());
+    assert.deepEqual(value.getDate(), today.getDate());
   });
 
-  test('initialize() - default options and schema', function() {
+  QUnit.test('initialize() - default options and schema', function(assert) {
     var editor = new Editor();
 
     var schema = editor.schema,
@@ -42,15 +44,15 @@
 
     //Schema options
     var today = new Date;
-    same(schema.yearStart, today.getFullYear() - 100);
-    same(schema.yearEnd, today.getFullYear());
+    assert.deepEqual(schema.yearStart, today.getFullYear() - 100);
+    assert.deepEqual(schema.yearEnd, today.getFullYear());
 
     //Options should default to those stored on the static class
-    same(editor.options.showMonthNames, Editor.showMonthNames);
-    same(editor.options.monthNames, Editor.monthNames);
+    assert.deepEqual(editor.options.showMonthNames, Editor.showMonthNames);
+    assert.deepEqual(editor.options.monthNames, Editor.monthNames);
   });
 
-  test('render()', function() {
+  QUnit.test('render()', function(assert) {
     var date = new Date,
         editor = new Editor({ value: date }),
         spy = this.sinon.spy(editor, 'setValue');
@@ -58,38 +60,38 @@
     editor.render();
 
     //Test DOM elements
-    same(editor.$date.attr('data-type'), 'date');
-    same(editor.$date.find('option:first').val(), '1');
-    same(editor.$date.find('option:last').val(), '31');
-    same(editor.$date.find('option:first').html(), '1');
-    same(editor.$date.find('option:last').html(), '31');
+    assert.deepEqual(editor.$date.attr('data-type'), 'date');
+    assert.deepEqual(editor.$date.find('option:first').val(), '1');
+    assert.deepEqual(editor.$date.find('option:last').val(), '31');
+    assert.deepEqual(editor.$date.find('option:first').html(), '1');
+    assert.deepEqual(editor.$date.find('option:last').html(), '31');
 
-    same(editor.$month.attr('data-type'), 'month');
-    same(editor.$month.find('option:first').val(), '0');
-    same(editor.$month.find('option:last').val(), '11');
-    same(editor.$month.find('option:first').html(), 'January');
-    same(editor.$month.find('option:last').html(), 'December');
+    assert.deepEqual(editor.$month.attr('data-type'), 'month');
+    assert.deepEqual(editor.$month.find('option:first').val(), '0');
+    assert.deepEqual(editor.$month.find('option:last').val(), '11');
+    assert.deepEqual(editor.$month.find('option:first').html(), 'January');
+    assert.deepEqual(editor.$month.find('option:last').html(), 'December');
 
-    same(editor.$year.attr('data-type'), 'year');
-    same(editor.$year.find('option:first').val(), editor.schema.yearStart.toString());
-    same(editor.$year.find('option:last').val(), editor.schema.yearEnd.toString());
-    same(editor.$year.find('option:first').html(), editor.schema.yearStart.toString());
-    same(editor.$year.find('option:last').html(), editor.schema.yearEnd.toString());
+    assert.deepEqual(editor.$year.attr('data-type'), 'year');
+    assert.deepEqual(editor.$year.find('option:first').val(), editor.schema.yearStart.toString());
+    assert.deepEqual(editor.$year.find('option:last').val(), editor.schema.yearEnd.toString());
+    assert.deepEqual(editor.$year.find('option:first').html(), editor.schema.yearStart.toString());
+    assert.deepEqual(editor.$year.find('option:last').html(), editor.schema.yearEnd.toString());
 
-    ok(spy.calledWith(date), 'Called setValue');
+    assert.ok(spy.calledWith(date), 'Called setValue');
   });
 
-  test('render() - with showMonthNames false', function() {
+  QUnit.test('render() - with showMonthNames false', function(assert) {
     var editor = new Editor({
       showMonthNames: false
     }).render();
 
-    same(editor.$month.attr('data-type'), 'month');
-    same(editor.$month.find('option:first').html(), '1');
-    same(editor.$month.find('option:last').html(), '12');
+    assert.deepEqual(editor.$month.attr('data-type'), 'month');
+    assert.deepEqual(editor.$month.find('option:first').html(), '1');
+    assert.deepEqual(editor.$month.find('option:last').html(), '12');
   });
 
-  test('render() - with yearStart after yearEnd', function() {
+  QUnit.test('render() - with yearStart after yearEnd', function(assert) {
     var editor = new Editor({
       schema: {
         yearStart: 2000,
@@ -97,23 +99,23 @@
       }
     }).render();
 
-    same(editor.$year.find('option:first').val(), editor.schema.yearStart.toString());
-    same(editor.$year.find('option:last').val(), editor.schema.yearEnd.toString());
-    same(editor.$year.find('option:first').html(), editor.schema.yearStart.toString());
-    same(editor.$year.find('option:last').html(), editor.schema.yearEnd.toString());
+    assert.deepEqual(editor.$year.find('option:first').val(), editor.schema.yearStart.toString());
+    assert.deepEqual(editor.$year.find('option:last').val(), editor.schema.yearEnd.toString());
+    assert.deepEqual(editor.$year.find('option:first').html(), editor.schema.yearStart.toString());
+    assert.deepEqual(editor.$year.find('option:last').html(), editor.schema.yearEnd.toString());
   });
 
-  test('getValue() - returns a Date', function() {
+  QUnit.test('getValue() - returns a Date', function(assert) {
     var date = new Date(2010, 5, 5),
         editor = new Editor({ value: date }).render();
 
     var value = editor.getValue();
 
-    same(value.constructor.name, 'Date');
-    same(value.getTime(), date.getTime());
+    assert.deepEqual(value.constructor.name, 'Date');
+    assert.deepEqual(value.getTime(), date.getTime());
   });
 
-  test('setValue()', function() {
+  QUnit.test('setValue()', function(assert) {
     var date = new Date(2015, 1, 4);
 
     var editor = new Editor({
@@ -125,14 +127,14 @@
 
     editor.setValue(date);
 
-    same(editor.$date.val(), '4');
-    same(editor.$month.val(), '1');
-    same(editor.$year.val(), '2015');
+    assert.deepEqual(editor.$date.val(), '4');
+    assert.deepEqual(editor.$month.val(), '1');
+    assert.deepEqual(editor.$year.val(), '2015');
 
-    same(editor.getValue().getTime(), date.getTime());
+    assert.deepEqual(editor.getValue().getTime(), date.getTime());
   });
 
-  test('setValue() updates model', function() {
+  QUnit.test('setValue() updates model', function(assert) {
     var date = new Date(2015, 1, 4);
 
     var editor = new Editor({
@@ -144,14 +146,14 @@
 
     editor.setValue(date);
     editor.render();
-    same(editor.$date.val(), '4');
-    same(editor.$month.val(), '1');
-    same(editor.$year.val(), '2015');
+    assert.deepEqual(editor.$date.val(), '4');
+    assert.deepEqual(editor.$month.val(), '1');
+    assert.deepEqual(editor.$year.val(), '2015');
 
-    same(editor.getValue().getTime(), date.getTime());
+    assert.deepEqual(editor.getValue().getTime(), date.getTime());
   });
 
-  test('updates the hidden input when a value changes', function() {
+  QUnit.test('updates the hidden input when a value changes', function(assert) {
     var date = new Date(2012, 2, 5);
 
     var editor = new Editor({
@@ -169,16 +171,16 @@
 
     var hiddenVal = new Date(editor.$hidden.val());
 
-    same(editor.getValue().getTime(), hiddenVal.getTime());
-    same(hiddenVal.getFullYear(), 2020);
-    same(hiddenVal.getMonth(), 6);
-    same(hiddenVal.getDate(), 13);
+    assert.deepEqual(editor.getValue().getTime(), hiddenVal.getTime());
+    assert.deepEqual(hiddenVal.getFullYear(), 2020);
+    assert.deepEqual(hiddenVal.getMonth(), 6);
+    assert.deepEqual(hiddenVal.getDate(), 13);
   });
 
 
 
-  module('Date events', {
-    setup: function() {
+  QUnit.module('Date events', {
+    beforeEach: function() {
       this.sinon = sinon.sandbox.create();
 
       this.editor = new Editor().render();
@@ -186,30 +188,31 @@
       $('body').append(this.editor.el);
     },
 
-    teardown: function() {
+    afterEach: function() {
       this.sinon.restore();
 
       this.editor.remove();
     }
   });
 
-  test("focus() - gives focus to editor and its first selectbox", function() {
+  QUnit.test("focus() - gives focus to editor and its first selectbox", function(assert) {
     var editor = this.editor;
 
     editor.focus();
 
-    ok(editor.hasFocus);
-    ok(editor.$('select').first().is(':focus'));
+    assert.ok(editor.hasFocus);
+    assert.ok(editor.$('select').first().is(':focus'));
 
     editor.blur();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-      start();
+      done();
     }, 0);
   });
 
-  test("focus() - triggers the 'focus' event", function() {
+  QUnit.test("focus() - triggers the 'focus' event", function(assert) {
     var editor = this.editor;
 
     var spy = this.sinon.spy();
@@ -218,36 +221,38 @@
 
     editor.focus();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-      ok(spy.called);
-      ok(spy.calledWith(editor));
+      assert.ok(spy.called);
+      assert.ok(spy.calledWith(editor));
 
       editor.blur();
 
       setTimeout(function() {
-        start();
+        done();
       }, 0);
     }, 0);
   });
 
-  test("blur() - removes focus from the editor and its focused selectbox", function() {
+  QUnit.test("blur() - removes focus from the editor and its focused selectbox", function(assert) {
     var editor = this.editor;
 
     editor.focus();
 
     editor.blur();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-      ok(!editor.hasFocus);
-      ok(!editor.$('input[type=selectbox]').first().is(':focus'));
+      assert.ok(!editor.hasFocus);
+      assert.ok(!editor.$('input[type=selectbox]').first().is(':focus'));
 
-      start();
+      done();
     }, 0);
   });
 
-  test("blur() - triggers the 'blur' event", function() {
+  QUnit.test("blur() - triggers the 'blur' event", function(assert) {
     var editor = this.editor;
 
     editor.focus();
@@ -258,16 +263,17 @@
 
     editor.blur();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-      ok(spy.called);
-      ok(spy.calledWith(editor));
+      assert.ok(spy.called);
+      assert.ok(spy.calledWith(editor));
 
-      start();
+      done();
     }, 0);
   });
 
-  test("'change' event - bubbles up from the selectbox", function() {
+  QUnit.test("'change' event - bubbles up from the selectbox", function(assert) {
     var editor = this.editor;
 
     var spy = this.sinon.spy();
@@ -277,11 +283,11 @@
     editor.$("select").first().val('31');
     editor.$("select").first().change();
 
-    ok(spy.called);
-    ok(spy.calledWith(editor));
+    assert.ok(spy.called);
+    assert.ok(spy.calledWith(editor));
   });
 
-  test("'focus' event - bubbles up from selectbox when editor doesn't have focus", function() {
+  QUnit.test("'focus' event - bubbles up from selectbox when editor doesn't have focus", function(assert) {
     var editor = this.editor;
 
     var spy = this.sinon.spy();
@@ -290,18 +296,19 @@
 
     editor.$("select").first().focus();
 
-    ok(spy.called);
-    ok(spy.calledWith(editor));
+    assert.ok(spy.called);
+    assert.ok(spy.calledWith(editor));
 
     editor.blur();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-      start();
+      done();
     }, 0);
   });
 
-  test("'focus' event - doesn't bubble up from selectbox when editor already has focus", function() {
+  QUnit.test("'focus' event - doesn't bubble up from selectbox when editor already has focus", function(assert) {
     var editor = this.editor;
 
     editor.focus();
@@ -312,17 +319,18 @@
 
     editor.$("select").focus();
 
-    ok(!spy.called);
+    assert.ok(!spy.called);
 
     editor.blur();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-      start();
+      done();
     }, 0);
   });
 
-  test("'blur' event - bubbles up from selectbox when editor has focus and we're not focusing on another one of the editor's selectboxes", function() {
+  QUnit.test("'blur' event - bubbles up from selectbox when editor has focus and we're not focusing on another one of the editor's selectboxes", function(assert) {
     var editor = this.editor;
 
     editor.focus();
@@ -333,16 +341,17 @@
 
     editor.$("select").first().blur();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-        ok(spy.called);
-        ok(spy.calledWith(editor));
+        assert.ok(spy.called);
+        assert.ok(spy.calledWith(editor));
 
-        start();
+        done();
     }, 0);
   });
 
-  test("'blur' event - doesn't bubble up from selectbox when editor has focus and we're focusing on another one of the editor's selectboxes", function() {
+  QUnit.test("'blur' event - doesn't bubble up from selectbox when editor has focus and we're focusing on another one of the editor's selectboxes", function(assert) {
     var editor = this.editor;
 
     editor.focus();
@@ -354,19 +363,20 @@
     editor.$("select:eq(0)").blur();
     editor.$("select:eq(1)").focus();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-      ok(!spy.called);
+      assert.ok(!spy.called);
 
       editor.blur();
 
       setTimeout(function() {
-        start();
+        done();
       }, 0);
     }, 0);
   });
 
-  test("'blur' event - doesn't bubble up from selectbox when editor doesn't have focus", function() {
+  QUnit.test("'blur' event - doesn't bubble up from selectbox when editor doesn't have focus", function(assert) {
     var editor = this.editor;
 
     var spy = this.sinon.spy();
@@ -375,11 +385,12 @@
 
     editor.$("select").blur();
 
-    stop();
+    
+    var done = assert.async();
     setTimeout(function() {
-        ok(!spy.called);
+        assert.ok(!spy.called);
 
-        start();
+        done();
     }, 0);
   });
 

@@ -1,28 +1,32 @@
 ;(function(Form, Editor) {
 
-  module('Hidden');
+  // var equal = assert.equal
+  // var ok = assert.ok
+  // var deepEqual = assert.deepEqual
 
-  var same = deepEqual;
+  QUnit.module('Hidden');
+
+  // var same = assert.deepEqual;
 
 
-  module('Hidden#initialize');
+  QUnit.module('Hidden#initialize');
 
-  test('sets input type', function() {
+  QUnit.test('sets input type', function(assert) {
     var editor = new Editor();
 
-    same(editor.$el.attr('type'), 'hidden');
+    assert.deepEqual(editor.$el.attr('type'), 'hidden');
   });
 
-  test('Default value', function() {
+  QUnit.test('Default value', function(assert) {
     var editor = new Editor().render();
 
-    equal(editor.getValue(), '');
+    assert.equal(editor.getValue(), '');
   });
 
-  test('sets noField property so that the wrapping field is not rendered', function() {
+  QUnit.test('sets noField property so that the wrapping field is not rendered', function(assert) {
     var editor = new Editor();
 
-    same(editor.noField, true);
+    assert.deepEqual(editor.noField, true);
   });
 
 })(Backbone.Form, Backbone.Form.editors.Hidden);

@@ -11,7 +11,7 @@ Form.editors.Radio = Form.editors.Select.extend({
 
   tagName: 'ul',
 
-  events: {
+  _defaultEvents: {
     'change input[type=radio]': function() {
       this.trigger('change', this);
     },

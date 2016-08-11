@@ -1,22 +1,22 @@
 ;(function(Form, Editor) {
+  // var ok = assert.ok
+  QUnit.module('TextArea');
 
-  module('TextArea');
-
-  var same = deepEqual;
+  // var same = assert.deepEqual;
 
 
-  module('TextArea#initialize');
+  QUnit.module('TextArea#initialize');
 
-  test('sets tag type', function() {
+  QUnit.test('sets tag type', function(assert) {
     var editor = new Editor();
 
-    ok(editor.$el.is('textarea'));
+    assert.ok(editor.$el.is('textarea'));
   });
 
-  test('does not set type attribute', function() {
+  QUnit.test('does not set type attribute', function(assert) {
     var editor = new Editor();
 
-    same(editor.$el.attr('type'), undefined);
+    assert.deepEqual(editor.$el.attr('type'), undefined);
   });
 
 

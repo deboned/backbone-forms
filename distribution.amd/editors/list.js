@@ -13,19 +13,23 @@ define(['jquery', 'underscore', 'backbone', 'backbone-forms'], function($, _, Ba
    */
   Form.editors.List = Form.editors.Base.extend({
 
-    events: {
+    _defaultEvents: {
       'click [data-action="add"]': function(event) {
         event.preventDefault();
         this.addItem(undefined, true);
       }
     },
 
-    initialize: function(options) {
+    getEditors: function () {
+      return Form.editors;
+    },
+
+    constructor: function(options) {
       options = options || {};
 
       var editors = Form.editors;
 
-      editors.Base.prototype.initialize.call(this, options);
+      editors.Base.apply( this, arguments );
 
       var schema = this.schema;
       if (!schema) throw new Error("Missing required option 'schema'");
@@ -278,7 +282,7 @@ define(['jquery', 'underscore', 'backbone', 'backbone-forms'], function($, _, Ba
    */
   Form.editors.List.Item = Form.editors.Base.extend({
 
-    events: {
+    _defaultEvents: {
       'click [data-action="remove"]': function(event) {
         event.preventDefault();
         this.list.removeItem(this);
@@ -291,7 +295,9 @@ define(['jquery', 'underscore', 'backbone', 'backbone-forms'], function($, _, Ba
       }
     },
 
-    initialize: function(options) {
+    constructor: function(options) {
+      Form.editors.Base.apply( this, arguments );
+
       this.list = options.list;
       this.schema = options.schema || this.list.schema;
       this.value = options.value;
@@ -415,7 +421,7 @@ define(['jquery', 'underscore', 'backbone', 'backbone-forms'], function($, _, Ba
    */
   Form.editors.List.Modal = Form.editors.Base.extend({
 
-    events: {
+    _defaultEvents: {
       'click': 'openEditor'
     },
 
@@ -427,10 +433,10 @@ define(['jquery', 'underscore', 'backbone', 'backbone-forms'], function($, _, Ba
      * @param {Object} [options.schema.subSchema]       Schema for nested form,. Required when itemType is 'Object'
      * @param {Function} [options.schema.model]         Model constructor function. Required when itemType is 'NestedModel'
      */
-    initialize: function(options) {
+    constructor: function(options) {
       options = options || {};
 
-      Form.editors.Base.prototype.initialize.call(this, options);
+      Form.editors.Base.apply( this, arguments );
 
       //Dependencies
       if (!Form.editors.List.Modal.ModalAdapter) throw new Error('A ModalAdapter is required');
@@ -621,8 +627,8 @@ define(['jquery', 'underscore', 'backbone', 'backbone-forms'], function($, _, Ba
 
 
   Form.editors.List.Object = Form.editors.List.Modal.extend({
-    initialize: function () {
-      Form.editors.List.Modal.prototype.initialize.apply(this, arguments);
+    constructor: function () {
+      Form.editors.List.Modal.apply( this, arguments );
 
       var schema = this.schema;
 
@@ -634,8 +640,8 @@ define(['jquery', 'underscore', 'backbone', 'backbone-forms'], function($, _, Ba
 
 
   Form.editors.List.NestedModel = Form.editors.List.Modal.extend({
-    initialize: function() {
-      Form.editors.List.Modal.prototype.initialize.apply(this, arguments);
+    constructor: function() {
+      Form.editors.List.Modal.apply( this, arguments );
 
       var schema = this.schema;
 

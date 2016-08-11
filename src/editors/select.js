@@ -13,7 +13,7 @@ Form.editors.Select = Form.editors.Base.extend({
 
   previousValue: '',
 
-  events: {
+  _defaultEvents: {
     'keyup':    'determineChange',
     'keypress': function(event) {
       var self = this;
@@ -32,8 +32,8 @@ Form.editors.Select = Form.editors.Base.extend({
     }
   },
 
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     if (!this.schema || !this.schema.options) throw new Error("Missing required 'schema.options'");
   },
@@ -146,7 +146,12 @@ Form.editors.Select = Form.editors.Base.extend({
   },
 
   getValue: function() {
-    return this.$el.val();
+    var val = this.$el.val();
+    //patch on jQuery 3 when val is null if no element selected at first
+    if(!val) {
+      val = $(this.$el.prop('outerHTML')).val();
+    }
+    return val;
   },
 
   setValue: function(value) {

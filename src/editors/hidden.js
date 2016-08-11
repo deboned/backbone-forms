@@ -7,8 +7,8 @@ Form.editors.Hidden = Form.editors.Text.extend({
 
   noField: true,
 
-  initialize: function(options) {
-    Form.editors.Text.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     this.$el.attr('type', 'hidden');
   },

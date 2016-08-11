@@ -7,8 +7,8 @@
  *   schema.model:   Embedded model constructor
  */
 Form.editors.NestedModel = Form.editors.Object.extend({
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     if (!this.form) throw new Error('Missing required option "form"');
     if (!options.schema.model) throw new Error('Missing required "schema.model" option for NestedModel editor');

@@ -1,16 +1,20 @@
 ;(function(Form, Editor) {
 
-  module('Select', {
-    setup: function() {
+  // var equal = assert.equal
+  // var ok = assert.ok
+  // var deepEqual = assert.deepEqual
+
+  QUnit.module('Select', {
+    beforeEach: function() {
         this.sinon = sinon.sandbox.create();
     },
 
-    teardown: function() {
+    afterEach: function() {
         this.sinon.restore();
     }
   });
 
-  var same = deepEqual;
+  // var same = assert.deepEqual;
 
   var OptionModel = Backbone.Model.extend({
     toString: function() {
@@ -41,87 +45,87 @@
 
 
 
-  test('Default value', function() {
+  QUnit.test('Default value', function(assert) {
     var editor = new Editor({
       schema: schema
     }).render();
 
-    equal(editor.getValue(), 'Sterling');
+    assert.equal(editor.getValue(), 'Sterling');
   });
 
-  test('Custom value', function() {
+  QUnit.test('Custom value', function(assert) {
     var editor = new Editor({
       value: 'Cyril',
       schema: schema
     }).render();
 
-    equal(editor.getValue(), 'Cyril');
+    assert.equal(editor.getValue(), 'Cyril');
   });
 
-  test('Value from model', function() {
+  QUnit.test('Value from model', function(assert) {
     var editor = new Editor({
       model: new Backbone.Model({ name: 'Lana' }),
       key: 'name',
       schema: schema
     }).render();
 
-    equal(editor.getValue(), 'Lana');
+    assert.equal(editor.getValue(), 'Lana');
   });
 
-  test('Correct type', function() {
+  QUnit.test('Correct type', function(assert) {
     var editor = new Editor({
       schema: schema
     }).render();
 
-    equal($(editor.el).get(0).tagName, 'SELECT');
+    assert.equal($(editor.el).get(0).tagName, 'SELECT');
   });
 
-  test('Option groups', function() {
+  QUnit.test('Option groups', function(assert) {
     var editor = new Editor({
       schema: optGroupSchema
     }).render();
 
-    equal(editor.$('optgroup').length, 2);
-    equal(editor.$('optgroup').first().attr('label'), 'Cities')
+    assert.equal(editor.$('optgroup').length, 2);
+    assert.equal(editor.$('optgroup').first().attr('label'), 'Cities')
   });
 
-  test('Option groups only contain their "own" options', function() {
+  QUnit.test('Option groups only contain their "own" options', function(assert) {
     var editor = new Editor({
       schema: optGroupSchema
     }).render();
 
     var group = editor.$('optgroup').first();
-    equal($('option', group).length, 3);
+    assert.equal($('option', group).length, 3);
     var options = _.map($('option', group), function(el) {
         return $(el).text();
     });
-    ok(_.contains(options, 'Paris'));
-    ok(_.contains(options, 'Beijing'));
-    ok(_.contains(options, 'San Francisco'));
+    assert.ok(_.contains(options, 'Paris'));
+    assert.ok(_.contains(options, 'Beijing'));
+    assert.ok(_.contains(options, 'San Francisco'));
 
     var group = editor.$('optgroup').last();
-    equal($('option', group).length, 2);
+    assert.equal($('option', group).length, 2);
     var options = _.map($('option', group), function(el) {
         return $(el).text();
     });
-    ok(_.contains(options, 'France'));
-    ok(_.contains(options, 'China'));
+    assert.ok(_.contains(options, 'France'));
+    assert.ok(_.contains(options, 'China'));
   });
 
-  test('Option groups allow to specify option value / label', function() {
+  QUnit.test('Option groups allow to specify option value / label', function(assert) {
     var editor = new Editor({
       schema: optGroupSchema
     }).render();
 
     var group = editor.$('optgroup').last();
     var options = $('option', group);
-    equal(options.first().attr('value'), 'fr');
-    equal(options.last().attr('value'), 'cn');
-    equal(options.first().text(), 'France');
-    equal(options.last().text(), 'China');
+    assert.equal(options.first().attr('value'), 'fr');
+    assert.equal(options.last().attr('value'), 'cn');
+    assert.equal(options.first().text(), 'France');
+    assert.equal(options.last().text(), 'China');
   });
 
-  test('Option groups with options as string', function() {
+  QUnit.test('Option groups with options as string', function(assert) {
     var editor = new Editor({
       schema: {
         options: [
@@ -138,18 +142,18 @@
     }).render();
 
     var group = editor.$('optgroup').first();
-    equal(group.attr('label'), 'Cities');
-    equal($('option', group).length, 3);
-    equal($('option', group).first().text(), 'Paris');
-    equal(editor.$('optgroup').length, 2);
+    assert.equal(group.attr('label'), 'Cities');
+    assert.equal($('option', group).length, 3);
+    assert.equal($('option', group).first().text(), 'Paris');
+    assert.equal(editor.$('optgroup').length, 2);
   });
 
-  test('Option groups with options as callback', function() {
+  QUnit.test('Option groups with options as callback', function(assert) {
     var editor = new Editor({
       schema: {
         options: function(callback, thisEditor) {
-          ok(thisEditor instanceof Editor);
-          ok(thisEditor instanceof Form.editors.Base);
+          assert.ok(thisEditor instanceof Editor);
+          assert.ok(thisEditor instanceof Form.editors.Base);
           callback(optGroupSchema.options);
         }
       }
@@ -157,30 +161,30 @@
 
     var optgroups = editor.$('optgroup');
 
-    equal(optgroups.length, 2);
+    assert.equal(optgroups.length, 2);
 
-    equal($('option', optgroups.first()).first().text(), 'Paris');
-    equal($('option', optgroups.last()).first().text(), 'France');
-    equal($('option', optgroups.last()).first().attr('value'), 'fr');
+    assert.equal($('option', optgroups.first()).first().text(), 'Paris');
+    assert.equal($('option', optgroups.last()).first().text(), 'France');
+    assert.equal($('option', optgroups.last()).first().attr('value'), 'fr');
   });
 
-  test('Each option group as its own callback', function() {
+  QUnit.test('Each option group as its own callback', function(assert) {
     var editor = new Editor({
       schema: {
         options: [
           {
             group: 'Cities',
             options: function(callback, thisEditor) {
-              ok(thisEditor instanceof Editor);
-              ok(thisEditor instanceof Form.editors.Base);
+              assert.ok(thisEditor instanceof Editor);
+              assert.ok(thisEditor instanceof Form.editors.Base);
               callback(optGroupSchema.options[0].options);
             }
           },
           {
             group: 'Countries',
             options: function(callback, thisEditor) {
-              ok(thisEditor instanceof Editor);
-              ok(thisEditor instanceof Form.editors.Base);
+              assert.ok(thisEditor instanceof Editor);
+              assert.ok(thisEditor instanceof Form.editors.Base);
               callback(optGroupSchema.options[1].options);
             }
           }
@@ -190,14 +194,14 @@
 
     var optgroups = editor.$('optgroup');
 
-    equal(optgroups.length, 2);
+    assert.equal(optgroups.length, 2);
 
-    equal($('option', optgroups.first()).first().text(), 'Paris');
-    equal($('option', optgroups.last()).first().text(), 'France');
-    equal($('option', optgroups.last()).first().attr('value'), 'fr');
+    assert.equal($('option', optgroups.first()).first().text(), 'Paris');
+    assert.equal($('option', optgroups.last()).first().text(), 'France');
+    assert.equal($('option', optgroups.last()).first().attr('value'), 'fr');
   });
 
-  test('Mixed specification for option groups', function() {
+  QUnit.test('Mixed specification for option groups', function(assert) {
     var countries = new OptionCollection([
       { id: 'fr', name: 'France' },
       { id: 'cn', name: 'China' }
@@ -209,8 +213,8 @@
           { group: 'Cities', options: ['Paris', 'Beijing', 'Tokyo']},
           { group: 'Food', options: '<option>Bread</option>'},
           { group: 'Cars', options: function(callback, thisEditor) {
-            ok(thisEditor instanceof Editor);
-            ok(thisEditor instanceof Form.editors.Base);
+            assert.ok(thisEditor instanceof Editor);
+            assert.ok(thisEditor instanceof Form.editors.Base);
             callback(['VolksWagen', 'Fiat', 'Opel', 'Tesla']);
           }}
         ]
@@ -219,27 +223,27 @@
 
     var optgroups = editor.$('optgroup');
 
-    equal(optgroups.length, 4);
+    assert.equal(optgroups.length, 4);
     // Countries:
     var options = $('option', optgroups.get(0));
-    equal(options.length, 2);
-    equal(options.first().attr('value'), 'fr');
-    equal(options.first().text(), 'France');
+    assert.equal(options.length, 2);
+    assert.equal(options.first().attr('value'), 'fr');
+    assert.equal(options.first().text(), 'France');
     // Cities
     var options = $('option', optgroups.get(1));
-    equal(options.length, 3);
-    equal(options.first().text(), 'Paris');
+    assert.equal(options.length, 3);
+    assert.equal(options.first().text(), 'Paris');
     // Food
     var options = $('option', optgroups.get(2));
-    equal(options.length, 1);
-    equal(options.first().text(), 'Bread');
+    assert.equal(options.length, 1);
+    assert.equal(options.first().text(), 'Bread');
     // Cars
     var options = $('option', optgroups.get(3));
-    equal(options.length, 4);
-    equal(options.last().text(), 'Tesla');
+    assert.equal(options.length, 4);
+    assert.equal(options.last().text(), 'Tesla');
   });
 
-  test('Option groups with collections', function() {
+  QUnit.test('Option groups with collections', function(assert) {
     var countries = new OptionCollection([
       { id: 'fr', name: 'France' },
       { id: 'cn', name: 'China' }
@@ -266,15 +270,15 @@
     }).render();
 
     var optgroups = editor.$el.find('optgroup');
-    equal(optgroups.length, 2);
+    assert.equal(optgroups.length, 2);
 
-    equal($('option', optgroups.first()).first().text(), 'France');
-    equal($('option', optgroups.first()).first().attr('value'), 'fr');
-    equal($('option', optgroups.last()).last().attr('value'), 'sf');
-    equal($('option', optgroups.last()).last().text(), 'San Francisco');
+    assert.equal($('option', optgroups.first()).first().text(), 'France');
+    assert.equal($('option', optgroups.first()).first().attr('value'), 'fr');
+    assert.equal($('option', optgroups.last()).last().attr('value'), 'sf');
+    assert.equal($('option', optgroups.last()).last().text(), 'San Francisco');
   });
 
-  test('setOptions() - updates the options on a rendered select', function() {
+  QUnit.test('setOptions() - updates the options on a rendered select', function(assert) {
     var editor = new Editor({
       schema: schema
     }).render();
@@ -283,12 +287,12 @@
 
     var newOptions = editor.$el.find('option');
 
-    equal(newOptions.length, 3);
-    equal(newOptions.first().html(), 1);
-    equal(newOptions.last().html(), 3);
+    assert.equal(newOptions.length, 3);
+    assert.equal(newOptions.first().html(), 1);
+    assert.equal(newOptions.last().html(), 3);
   });
 
-  test('Options as array of items', function() {
+  QUnit.test('Options as array of items', function(assert) {
     var editor = new Editor({
       schema: {
         options: ['Matilda', 'Larry']
@@ -297,11 +301,11 @@
 
     var newOptions = editor.$el.find('option');
 
-    equal(newOptions.first().html(), 'Matilda');
-    equal(newOptions.last().html(), 'Larry');
+    assert.equal(newOptions.first().html(), 'Matilda');
+    assert.equal(newOptions.last().html(), 'Larry');
   });
 
-  test('Options as array of objects', function() {
+  QUnit.test('Options as array of objects', function(assert) {
     var editor = new Editor({
       schema: {
         options: [
@@ -313,13 +317,13 @@
 
     var newOptions = editor.$el.find('option');
 
-    equal(newOptions.first().val(), 'kid1');
-    equal(newOptions.last().val(), 'kid2');
-    equal(newOptions.first().html(), 'Teo');
-    equal(newOptions.last().html(), 'Lilah');
+    assert.equal(newOptions.first().val(), 'kid1');
+    assert.equal(newOptions.last().val(), 'kid2');
+    assert.equal(newOptions.first().html(), 'Teo');
+    assert.equal(newOptions.last().html(), 'Lilah');
   });
 
-  test('Options as any object', function() {
+  QUnit.test('Options as any object', function(assert) {
     var editor = new Editor({
       schema: {
         options: {y:"Yes",n:"No"}
@@ -328,18 +332,18 @@
 
     var newOptions = editor.$el.find('option');
 
-    equal(newOptions.first().val(), 'y');
-    equal(newOptions.last().val(), 'n');
-    equal(newOptions.first().html(), 'Yes');
-    equal(newOptions.last().html(), 'No');
+    assert.equal(newOptions.first().val(), 'y');
+    assert.equal(newOptions.last().val(), 'n');
+    assert.equal(newOptions.first().html(), 'Yes');
+    assert.equal(newOptions.last().html(), 'No');
   });
 
-  test('Options as function that calls back with options', function() {
+  QUnit.test('Options as function that calls back with options', function(assert) {
     var editor = new Editor({
       schema: {
         options: function(callback, thisEditor) {
-          ok(thisEditor instanceof Editor);
-          ok(thisEditor instanceof Form.editors.Base);
+          assert.ok(thisEditor instanceof Editor);
+          assert.ok(thisEditor instanceof Form.editors.Base);
           callback(['Melony', 'Frank']);
         }
       }
@@ -347,11 +351,11 @@
 
     var newOptions = editor.$el.find('option');
 
-    equal(newOptions.first().html(), 'Melony');
-    equal(newOptions.last().html(), 'Frank');
+    assert.equal(newOptions.first().html(), 'Melony');
+    assert.equal(newOptions.last().html(), 'Frank');
   });
 
-  test('Options as string of HTML', function() {
+  QUnit.test('Options as string of HTML', function(assert) {
     var editor = new Editor({
       schema: {
         options: '<option>Howard</option><option>Bree</option>'
@@ -360,11 +364,11 @@
 
     var newOptions = editor.$el.find('option');
 
-    equal(newOptions.first().html(), 'Howard');
-    equal(newOptions.last().html(), 'Bree');
+    assert.equal(newOptions.first().html(), 'Howard');
+    assert.equal(newOptions.last().html(), 'Bree');
   });
 
-  test('Options as a pre-populated collection', function() {
+  QUnit.test('Options as a pre-populated collection', function(assert) {
     var options = new OptionCollection([
       { id: 'kid1', name: 'Billy' },
       { id: 'kid2', name: 'Sarah' }
@@ -378,13 +382,13 @@
 
     var newOptions = editor.$el.find('option');
 
-    equal(newOptions.first().val(), 'kid1');
-    equal(newOptions.last().val(), 'kid2');
-    equal(newOptions.first().html(), 'Billy');
-    equal(newOptions.last().html(), 'Sarah');
+    assert.equal(newOptions.first().val(), 'kid1');
+    assert.equal(newOptions.last().val(), 'kid2');
+    assert.equal(newOptions.first().html(), 'Billy');
+    assert.equal(newOptions.last().html(), 'Sarah');
   });
 
-  test('Options as a new collection (needs to be fetched)', function() {
+  QUnit.test('Options as a new collection (needs to be fetched)', function(assert) {
     var options = new OptionCollection();
 
     this.sinon.stub(options, 'fetch', function(options) {
@@ -404,13 +408,13 @@
 
     var newOptions = editor.$el.find('option');
 
-    equal(newOptions.first().val(), 'kid1');
-    equal(newOptions.last().val(), 'kid2');
-    equal(newOptions.first().html(), 'Barbara');
-    equal(newOptions.last().html(), 'Phil');
+    assert.equal(newOptions.first().val(), 'kid1');
+    assert.equal(newOptions.last().val(), 'kid2');
+    assert.equal(newOptions.first().html(), 'Barbara');
+    assert.equal(newOptions.last().html(), 'Phil');
   });
 
-  test("setValue() - updates the input value", function() {
+  QUnit.test("setValue() - updates the input value", function(assert) {
     var editor = new Editor({
       value: 'Pam',
       schema: schema
@@ -418,14 +422,14 @@
 
     editor.setValue('Lana');
 
-    equal(editor.getValue(), 'Lana');
-    equal($(editor.el).val(), 'Lana');
+    assert.equal(editor.getValue(), 'Lana');
+    assert.equal($(editor.el).val(), 'Lana');
   });
 
 
 
-  module('Select events', {
-    setup: function() {
+  QUnit.module('Select events', {
+    beforeEach: function() {
       this.sinon = sinon.sandbox.create();
 
       this.editor = new Editor({
@@ -436,23 +440,23 @@
       $('body').append(this.editor.el);
     },
 
-    teardown: function() {
+    afterEach: function() {
       this.sinon.restore();
 
       this.editor.remove();
     }
   });
 
-  test("focus() - gives focus to editor and its selectbox", function() {
+  QUnit.test("focus() - gives focus to editor and its selectbox", function(assert) {
     var editor = this.editor;
 
     editor.focus();
 
-    ok(editor.hasFocus);
-    ok(editor.$el.is(':focus'));
+    assert.ok(editor.hasFocus);
+    assert.ok(editor.$el.is(':focus'));
   });
 
-  test("focus() - triggers the 'focus' event", function() {
+  QUnit.test("focus() - triggers the 'focus' event", function(assert) {
     var editor = this.editor;
 
     var spy = this.sinon.spy();
@@ -461,22 +465,22 @@
 
     editor.focus();
 
-    ok(spy.called);
-    ok(spy.calledWith(editor));
+    assert.ok(spy.called);
+    assert.ok(spy.calledWith(editor));
   });
 
-  test("blur() - removes focus from the editor and its selectbox", function() {
+  QUnit.test("blur() - removes focus from the editor and its selectbox", function(assert) {
     var editor = this.editor;
 
     editor.focus();
 
     editor.blur();
 
-    ok(!editor.hasFocus);
-    ok(!editor.$el.is(':focus'));
+    assert.ok(!editor.hasFocus);
+    assert.ok(!editor.$el.is(':focus'));
   });
 
-  test("blur() - triggers the 'blur' event", function() {
+  QUnit.test("blur() - triggers the 'blur' event", function(assert) {
     var editor = this.editor;
 
     editor.focus()
@@ -487,11 +491,11 @@
 
     editor.blur();
 
-    ok(spy.called);
-    ok(spy.calledWith(editor));
+    assert.ok(spy.called);
+    assert.ok(spy.calledWith(editor));
   });
 
-  test("'change' event - bubbles up from the selectbox", function() {
+  QUnit.test("'change' event - bubbles up from the selectbox", function(assert) {
     var editor = this.editor;
 
     var spy = this.sinon.spy();
@@ -501,11 +505,11 @@
     editor.$el.val('Cyril');
     editor.$el.change();
 
-    ok(spy.calledOnce);
-    ok(spy.alwaysCalledWith(editor));
+    assert.ok(spy.calledOnce);
+    assert.ok(spy.alwaysCalledWith(editor));
   });
 
-  test("'change' event - is triggered when value of select changes", function() {
+  QUnit.test("'change' event - is triggered when value of select changes", function(assert) {
     var editor = this.editor;
 
     var callCount = 0;
@@ -517,7 +521,7 @@
     editor.$el.keypress();
     editor.$el.val('a');
 
-    stop();
+    var done = assert.async();
     setTimeout(function(){
       callCount++;
 
@@ -542,16 +546,16 @@
           editor.$el.keyup();
           editor.$el.keyup();
 
-          ok(spy.callCount == callCount);
-          ok(spy.alwaysCalledWith(editor));
+          assert.ok(spy.callCount == callCount);
+          assert.ok(spy.alwaysCalledWith(editor));
 
-          start();
+          done();
         }, 0);
       }, 0);
     }, 0);
   });
 
-  test("'focus' event - bubbles up from the selectbox", function() {
+  QUnit.test("'focus' event - bubbles up from the selectbox", function(assert) {
     var editor = this.editor;
 
     var spy = this.sinon.spy();
@@ -560,11 +564,11 @@
 
     editor.$el.focus();
 
-    ok(spy.calledOnce);
-    ok(spy.alwaysCalledWith(editor));
+    assert.ok(spy.calledOnce);
+    assert.ok(spy.alwaysCalledWith(editor));
   });
 
-  test("'blur' event - bubbles up from the selectbox", function() {
+  QUnit.test("'blur' event - bubbles up from the selectbox", function(assert) {
     var editor = this.editor;
 
     editor.$el.focus();
@@ -575,14 +579,14 @@
 
     editor.$el.blur();
 
-    ok(spy.calledOnce);
-    ok(spy.alwaysCalledWith(editor));
+    assert.ok(spy.calledOnce);
+    assert.ok(spy.alwaysCalledWith(editor));
   });
 
 
 
-  module('Select Text Escaping', {
-    setup: function() {
+  QUnit.module('Select Text Escaping', {
+    beforeEach: function() {
       this.sinon = sinon.sandbox.create();
 
       this.options = [
@@ -609,16 +613,16 @@
       $('body').append(this.editor.el);
     },
 
-    teardown: function() {
+    afterEach: function() {
       this.sinon.restore();
 
       this.editor.remove();
     }
   });
 
-  test('options content gets properly escaped', function() {
+  QUnit.test('options content gets properly escaped', function(assert) {
 
-    same( this.editor.schema.options, this.options );
+    assert.deepEqual( this.editor.schema.options, this.options );
 
     //What an awful string.
     //CAN'T have white-space on the left, or the string will no longer match
@@ -629,15 +633,15 @@ value=\"&quot;?'/><script>throw(&quot;XSS Success&quot;);</script>\">\"?'/&gt;&l
 throw(\"XSS Success\");&lt;/script&gt;</option><option value=\"><b>HTML</b><\">&gt;&lt;div \
 class=&gt;HTML&lt;/b&gt;&lt;</option>";
 
-    same( this.editor.$el.html(), escapedHTML );
+    assert.deepEqual( this.editor.$el.html(), escapedHTML );
 
-    same( this.editor.$('option').val(), this.options[0].val );
-    same( this.editor.$('option').first().text(), this.options[0].label );
-    same( this.editor.$('option').first().html(), '\"/&gt;&lt;script&gt;throw(\"XSS Success\");&lt;/script&gt;' );
-    same( this.editor.$('option').text(), "\"/><script>throw(\"XSS Success\");</script>\"?'/><script>throw(\"XSS Success\");</script>><div class=>HTML</b><" );
+    assert.deepEqual( this.editor.$('option').val(), this.options[0].val );
+    assert.deepEqual( this.editor.$('option').first().text(), this.options[0].label );
+    assert.deepEqual( this.editor.$('option').first().html(), '\"/&gt;&lt;script&gt;throw(\"XSS Success\");&lt;/script&gt;' );
+    assert.deepEqual( this.editor.$('option').text(), "\"/><script>throw(\"XSS Success\");</script>\"?'/><script>throw(\"XSS Success\");</script>><div class=>HTML</b><" );
   });
 
-  test('options object content gets properly escaped', function() {
+  QUnit.test('options object content gets properly escaped', function(assert) {
 
       var options = {
         key1: '><b>HTML</b><',
@@ -650,7 +654,7 @@ class=&gt;HTML&lt;/b&gt;&lt;</option>";
         }
       }).render();
 
-    same( editor.schema.options, options );
+    assert.deepEqual( editor.schema.options, options );
 
     //What an awful string.
     //CAN'T have white-space on the left, or the string will no longer match
@@ -658,15 +662,15 @@ class=&gt;HTML&lt;/b&gt;&lt;</option>";
     var escapedHTML = "<option value=\"key1\">&gt;&lt;b&gt;HTML&lt;/b&gt;&lt;</option>\
 <option value=\"key2\">&gt;&lt;div class=&gt;HTML&lt;/b&gt;&lt;</option>";
 
-    same( editor.$el.html(), escapedHTML );
+    assert.deepEqual( editor.$el.html(), escapedHTML );
 
-    same( editor.$('option').val(), _.keys(options)[0] );
-    same( editor.$('option').first().text(), options.key1 );
-    same( editor.$('option').first().html(), '&gt;&lt;b&gt;HTML&lt;/b&gt;&lt;' );
-    same( editor.$('option').text(), '><b>HTML</b><><div class=>HTML</b><' );
+    assert.deepEqual( editor.$('option').val(), _.keys(options)[0] );
+    assert.deepEqual( editor.$('option').first().text(), options.key1 );
+    assert.deepEqual( editor.$('option').first().html(), '&gt;&lt;b&gt;HTML&lt;/b&gt;&lt;' );
+    assert.deepEqual( editor.$('option').text(), '><b>HTML</b><><div class=>HTML</b><' );
   });
 
-  test('option groups content gets properly escaped', function() {
+  QUnit.test('option groups content gets properly escaped', function(assert) {
     var options = [{
       group: '"/><script>throw("XSS Success");</script>',
       options: [
@@ -690,7 +694,7 @@ class=&gt;HTML&lt;/b&gt;&lt;</option>";
       }
     }).render();
 
-    same( editor.schema.options, options );
+    assert.deepEqual( editor.schema.options, options );
 
     //What an awful string.
     //CAN'T have white-space on the left, or the string will no longer match
@@ -703,12 +707,12 @@ throw(&quot;XSS Success&quot;);</script>\">\"?'/&gt;&lt;script&gt;throw(\"XSS \
 Success\");&lt;/script&gt;</option><option value=\"><b>HTML</b><\">&gt;&lt;\
 div class=&gt;HTML&lt;/b&gt;&lt;</option></optgroup>";
 
-    same( editor.$el.html(), escapedHTML );
+    assert.deepEqual( editor.$el.html(), escapedHTML );
 
-    same( editor.$('option').val(), options[0].options[0].val );
-    same( editor.$('option').first().text(), options[0].options[0].label );
-    same( editor.$('option').first().html(), '\"/&gt;&lt;script&gt;throw(\"XSS Success\");&lt;/script&gt;' );
-    same( editor.$('option').text(), "\"/><script>throw(\"XSS Success\");</script>\"?'/><script>throw(\"XSS Success\");</script>><div class=>HTML</b><" );
+    assert.deepEqual( editor.$('option').val(), options[0].options[0].val );
+    assert.deepEqual( editor.$('option').first().text(), options[0].options[0].label );
+    assert.deepEqual( editor.$('option').first().html(), '\"/&gt;&lt;script&gt;throw(\"XSS Success\");&lt;/script&gt;' );
+    assert.deepEqual( editor.$('option').text(), "\"/><script>throw(\"XSS Success\");</script>\"?'/><script>throw(\"XSS Success\");</script>><div class=>HTML</b><" );
   });
 
 })(Backbone.Form, Backbone.Form.editors.Select);

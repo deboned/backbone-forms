@@ -3,8 +3,8 @@
  */
 Form.editors.Password = Form.editors.Text.extend({
 
-  initialize: function(options) {
-    Form.editors.Text.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Text.apply( this, arguments );
 
     this.$el.attr('type', 'password');
   }

@@ -13,7 +13,7 @@ Form.editors.Checkboxes = Form.editors.Select.extend({
 
   groupNumber: 0,
 
-  events: {
+  _defaultEvents: {
     'click input[type=checkbox]': function() {
       this.trigger('change', this);
     },

@@ -18,11 +18,13 @@ Form.Field = Backbone.View.extend({
    * @param {Function} [options.template]
    * @param {Function} [options.errorClassName]
    */
-  initialize: function(options) {
+  constructor: function(options) {
+    Backbone.View.apply( this, arguments );
+
     options = options || {};
 
     //Store important data
-    _.extend(this, _.pick(options, 'form', 'key', 'model', 'value', 'idPrefix'));
+    _.extend(this, _.pick(options, 'form', 'key', 'value', 'idPrefix'));
 
     //Create the full field schema, merging defaults etc.
     var schema = this.schema = this.createSchema(options.schema);

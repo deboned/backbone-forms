@@ -6,7 +6,7 @@
  */
 Form.editors.DateTime = Form.editors.Base.extend({
 
-  events: {
+  _defaultEvents: {
     'change select':  function() {
       this.updateHidden();
       this.trigger('change', this);
@@ -25,10 +25,10 @@ Form.editors.DateTime = Form.editors.Base.extend({
     }
   },
 
-  initialize: function(options) {
+  constructor: function(options) {
     options = options || {};
 
-    Form.editors.Base.prototype.initialize.call(this, options);
+    Form.editors.Base.apply( this, arguments );
 
     //Option defaults
     this.options = _.extend({

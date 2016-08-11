@@ -15,7 +15,9 @@ Form.Fieldset = Backbone.View.extend({
    * @param {String[]|Object[]} options.schema      Fieldset schema
    * @param {Object} options.fields           Form fields
    */
-  initialize: function(options) {
+  constructor: function(options) {
+    Backbone.View.apply( this, arguments );
+
     options = options || {};
 
     //Create the full fieldset schema, merging defaults etc.

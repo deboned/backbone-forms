@@ -1,5 +1,5 @@
 /**
- * Backbone Forms v0.14.0
+ * Backbone Forms v0.15.0
  *
  * Copyright (c) 2014 Charles Davison, Pow Media Ltd
  *
@@ -35,6 +35,7 @@ var Form = Backbone.View.extend({
     }
   },
 
+
   /**
    * Constructor
    *
@@ -49,7 +50,9 @@ var Form = Backbone.View.extend({
    * @param {Function} [options.template]
    * @param {Boolean|String} [options.submitButton]
    */
-  initialize: function(options) {
+  constructor: function(options) {
+    Backbone.View.apply( this, arguments );
+
     var self = this;
 
     //Merge default options
@@ -74,7 +77,7 @@ var Form = Backbone.View.extend({
     })();
 
     //Store important data
-    _.extend(this, _.pick(options, 'model', 'data', 'idPrefix', 'templateData'));
+    _.extend(this, _.pick(options, 'data', 'idPrefix', 'templateData'));
 
     //Override defaults
     var constructor = this.constructor;
@@ -669,7 +672,9 @@ Form.Fieldset = Backbone.View.extend({
    * @param {String[]|Object[]} options.schema      Fieldset schema
    * @param {Object} options.fields           Form fields
    */
-  initialize: function(options) {
+  constructor: function(options) {
+    Backbone.View.apply( this, arguments );
+
     options = options || {};
 
     //Create the full fieldset schema, merging defaults etc.
@@ -797,11 +802,13 @@ Form.Field = Backbone.View.extend({
    * @param {Function} [options.template]
    * @param {Function} [options.errorClassName]
    */
-  initialize: function(options) {
+  constructor: function(options) {
+    Backbone.View.apply( this, arguments );
+
     options = options || {};
 
     //Store important data
-    _.extend(this, _.pick(options, 'form', 'key', 'model', 'value', 'idPrefix'));
+    _.extend(this, _.pick(options, 'form', 'key', 'value', 'idPrefix'));
 
     //Create the full field schema, merging defaults etc.
     var schema = this.schema = this.createSchema(options.schema);
@@ -1139,7 +1146,14 @@ Form.Editor = Form.editors.Base = Backbone.View.extend({
 
   hasFocus: false,
 
-  initialize: function(options) {
+  _defaultEvents: {},
+
+  constructor: function(options) {
+
+    this.events = _.extend({}, this._defaultEvents, this.events);
+
+    Backbone.View.apply( this, arguments );
+
     var options = options || {};
 
     //Set initial value
@@ -1164,8 +1178,7 @@ Form.Editor = Form.editors.Base = Backbone.View.extend({
     this.validators = options.validators || schema.validators;
 
     //Main attributes
-    this.$el.attr('id', this.id);
-    this.$el.attr('name', this.getName());
+    this.$el.attr({'id': this.id, 'name': this.getName()});
     if (schema.editorClass) this.$el.addClass(schema.editorClass);
     if (schema.editorAttrs) this.$el.attr(schema.editorAttrs);
   },
@@ -1330,7 +1343,7 @@ Form.editors.Text = Form.Editor.extend({
 
   previousValue: '',
 
-  events: {
+  _defaultEvents: {
     'keyup':    'determineChange',
     'keypress': function(event) {
       var self = this;
@@ -1349,8 +1362,8 @@ Form.editors.Text = Form.Editor.extend({
     }
   },
 
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     var schema = this.schema;
 
@@ -1428,8 +1441,8 @@ Form.editors.TextArea = Form.editors.Text.extend({
   /**
    * Override Text constructor so type property isn't set (issue #261)
    */
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
   }
 
 });
@@ -1439,8 +1452,8 @@ Form.editors.TextArea = Form.editors.Text.extend({
  */
 Form.editors.Password = Form.editors.Text.extend({
 
-  initialize: function(options) {
-    Form.editors.Text.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Text.apply( this, arguments );
 
     this.$el.attr('type', 'password');
   }
@@ -1456,13 +1469,13 @@ Form.editors.Number = Form.editors.Text.extend({
 
   defaultValue: 0,
 
-  events: _.extend({}, Form.editors.Text.prototype.events, {
+  _defaultEvents: _.extend({}, Form.editors.Text.prototype._defaultEvents, {
     'keypress': 'onKeyPress',
     'change': 'onKeyPress'
   }),
 
-  initialize: function(options) {
-    Form.editors.Text.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     var schema = this.schema;
 
@@ -1539,8 +1552,8 @@ Form.editors.Hidden = Form.editors.Text.extend({
 
   noField: true,
 
-  initialize: function(options) {
-    Form.editors.Text.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     this.$el.attr('type', 'hidden');
   },
@@ -1566,7 +1579,7 @@ Form.editors.Checkbox = Form.editors.Base.extend({
 
   tagName: 'input',
 
-  events: {
+  _defaultEvents: {
     'click':  function(event) {
       this.trigger('change', this);
     },
@@ -1578,8 +1591,8 @@ Form.editors.Checkbox = Form.editors.Base.extend({
     }
   },
 
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     this.$el.attr('type', 'checkbox');
   },
@@ -1635,7 +1648,7 @@ Form.editors.Select = Form.editors.Base.extend({
 
   previousValue: '',
 
-  events: {
+  _defaultEvents: {
     'keyup':    'determineChange',
     'keypress': function(event) {
       var self = this;
@@ -1654,8 +1667,8 @@ Form.editors.Select = Form.editors.Base.extend({
     }
   },
 
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     if (!this.schema || !this.schema.options) throw new Error("Missing required 'schema.options'");
   },
@@ -1768,7 +1781,12 @@ Form.editors.Select = Form.editors.Base.extend({
   },
 
   getValue: function() {
-    return this.$el.val();
+    var val = this.$el.val();
+    //patch on jQuery 3 when val is null if no element selected at first
+    if(!val) {
+      val = $(this.$el.prop('outerHTML')).val();
+    }
+    return val;
   },
 
   setValue: function(value) {
@@ -1872,7 +1890,7 @@ Form.editors.Radio = Form.editors.Select.extend({
 
   tagName: 'ul',
 
-  events: {
+  _defaultEvents: {
     'change input[type=radio]': function() {
       this.trigger('change', this);
     },
@@ -1989,7 +2007,7 @@ Form.editors.Checkboxes = Form.editors.Select.extend({
 
   groupNumber: 0,
 
-  events: {
+  _defaultEvents: {
     'click input[type=checkbox]': function() {
       this.trigger('change', this);
     },
@@ -2091,12 +2109,12 @@ Form.editors.Object = Form.editors.Base.extend({
   //Prevent error classes being set on the main control; they are internally on the individual fields
   hasNestedForm: true,
 
-  initialize: function(options) {
+  constructor: function(options) {
     //Set default value for the instance so it's not a shared object
     this.value = {};
 
     //Init
-    Form.editors.Base.prototype.initialize.call(this, options);
+    Form.editors.Base.apply( this, arguments );
 
     //Check required options
     if (!this.form) throw new Error('Missing required option "form"');
@@ -2186,8 +2204,8 @@ Form.editors.Object = Form.editors.Base.extend({
  *   schema.model:   Embedded model constructor
  */
 Form.editors.NestedModel = Form.editors.Object.extend({
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     if (!this.form) throw new Error('Missing required option "form"');
     if (!options.schema.model) throw new Error('Missing required "schema.model" option for NestedModel editor');
@@ -2251,7 +2269,7 @@ Form.editors.NestedModel = Form.editors.Object.extend({
  */
 Form.editors.Date = Form.editors.Base.extend({
 
-  events: {
+  _defaultEvents: {
     'change select':  function() {
       this.updateHidden();
       this.trigger('change', this);
@@ -2270,10 +2288,10 @@ Form.editors.Date = Form.editors.Base.extend({
     }
   },
 
-  initialize: function(options) {
+  constructor: function(options) {
     options = options || {};
 
-    Form.editors.Base.prototype.initialize.call(this, options);
+    Form.editors.Base.apply( this, arguments );
 
     var Self = Form.editors.Date,
         today = new Date();
@@ -2437,7 +2455,7 @@ Form.editors.Date = Form.editors.Base.extend({
  */
 Form.editors.DateTime = Form.editors.Base.extend({
 
-  events: {
+  _defaultEvents: {
     'change select':  function() {
       this.updateHidden();
       this.trigger('change', this);
@@ -2456,10 +2474,10 @@ Form.editors.DateTime = Form.editors.Base.extend({
     }
   },
 
-  initialize: function(options) {
+  constructor: function(options) {
     options = options || {};
 
-    Form.editors.Base.prototype.initialize.call(this, options);
+    Form.editors.Base.apply( this, arguments );
 
     //Option defaults
     this.options = _.extend({
@@ -2606,7 +2624,7 @@ Form.editors.DateTime = Form.editors.Base.extend({
 
 
   //Metadata
-  Form.VERSION = '0.14.0';
+  Form.VERSION = '0.15.0';
 
 
   //Exports

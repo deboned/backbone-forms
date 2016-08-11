@@ -16,7 +16,14 @@ Form.Editor = Form.editors.Base = Backbone.View.extend({
 
   hasFocus: false,
 
-  initialize: function(options) {
+  _defaultEvents: {},
+
+  constructor: function(options) {
+
+    this.events = _.extend({}, this._defaultEvents, this.events);
+
+    Backbone.View.apply( this, arguments );
+
     var options = options || {};
 
     //Set initial value
@@ -41,8 +48,7 @@ Form.Editor = Form.editors.Base = Backbone.View.extend({
     this.validators = options.validators || schema.validators;
 
     //Main attributes
-    this.$el.attr('id', this.id);
-    this.$el.attr('name', this.getName());
+    this.$el.attr({'id': this.id, 'name': this.getName()});
     if (schema.editorClass) this.$el.addClass(schema.editorClass);
     if (schema.editorAttrs) this.$el.attr(schema.editorAttrs);
   },

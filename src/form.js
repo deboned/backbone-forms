@@ -10,6 +10,7 @@ var Form = Backbone.View.extend({
     }
   },
 
+
   /**
    * Constructor
    *
@@ -24,7 +25,9 @@ var Form = Backbone.View.extend({
    * @param {Function} [options.template]
    * @param {Boolean|String} [options.submitButton]
    */
-  initialize: function(options) {
+  constructor: function(options) {
+    Backbone.View.apply( this, arguments );
+
     var self = this;
 
     //Merge default options
@@ -49,7 +52,7 @@ var Form = Backbone.View.extend({
     })();
 
     //Store important data
-    _.extend(this, _.pick(options, 'model', 'data', 'idPrefix', 'templateData'));
+    _.extend(this, _.pick(options, 'data', 'idPrefix', 'templateData'));
 
     //Override defaults
     var constructor = this.constructor;

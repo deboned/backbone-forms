@@ -9,7 +9,7 @@ Form.editors.Checkbox = Form.editors.Base.extend({
 
   tagName: 'input',
 
-  events: {
+  _defaultEvents: {
     'click':  function(event) {
       this.trigger('change', this);
     },
@@ -21,8 +21,8 @@ Form.editors.Checkbox = Form.editors.Base.extend({
     }
   },
 
-  initialize: function(options) {
-    Form.editors.Base.prototype.initialize.call(this, options);
+  constructor: function(options) {
+    Form.editors.Base.apply( this, arguments );
 
     this.$el.attr('type', 'checkbox');
   },

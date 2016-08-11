@@ -18,9 +18,12 @@ Form.Editor = Form.editors.Base = Backbone.View.extend({
 
   _defaultEvents: {},
 
+  _defaultAttributes: {},
+
   constructor: function(options) {
 
     this.events = _.extend({}, this._defaultEvents, this.events);
+    this.attributes = _.extend({}, this._defaultAttributes, this.attributes);
 
     Backbone.View.apply( this, arguments );
 

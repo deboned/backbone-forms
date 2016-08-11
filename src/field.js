@@ -105,15 +105,7 @@ Form.Field = Backbone.View.extend({
    * @return {String}
    */
   createTitle: function() {
-    var str = this.key;
-
-    //Add spaces
-    str = str.replace(/([A-Z])/g, ' $1');
-
-    //Uppercase first character
-    str = str.replace(/^./, function(str) { return str.toUpperCase(); });
-
-    return str;
+    return this.key.replace(/([A-Z])/g, ' $1').replace(/^./, function(str) { return str.toUpperCase(); });
   },
 
   /**

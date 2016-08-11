@@ -10,7 +10,6 @@ var Form = Backbone.View.extend({
     }
   },
 
-
   /**
    * Constructor
    *
@@ -28,38 +27,19 @@ var Form = Backbone.View.extend({
   constructor: function(options) {
     Backbone.View.apply( this, arguments );
 
-    var self = this;
-
     //Merge default options
     options = this.options = _.extend({
       submitButton: false
     }, options);
 
     //Find the schema to use
-    var schema = this.schema = (function() {
-      //Prefer schema from options
-      if (options.schema) return _.result(options, 'schema');
-
-      //Then schema on model
-      var model = options.model;
-      if (model && model.schema) return _.result(model, 'schema');
-
-      //Then built-in schema
-      if (self.schema) return _.result(self, 'schema');
-
-      //Fallback to empty schema
-      return {};
-    })();
+    var schema = this.schema = this.createSchema(options);
 
     //Store important data
     _.extend(this, _.pick(options, 'data', 'idPrefix', 'templateData'));
 
     //Override defaults
-    var constructor = this.constructor;
-    this.template = options.template || this.template || constructor.template;
-    this.Fieldset = options.Fieldset || this.Fieldset || constructor.Fieldset;
-    this.Field = options.Field || this.Field || constructor.Field;
-    this.NestedField = options.NestedField || this.NestedField || constructor.NestedField;
+    this._overridesDefaults(options);
 
     //Check which fields will be included (defaults to all)
     var selectedFields = this.selectedFields = options.fields || _.keys(schema);
@@ -79,6 +59,30 @@ var Form = Backbone.View.extend({
     _.each(fieldsetSchema, function(itemSchema) {
       this.fieldsets.push(this.createFieldset(itemSchema));
     }, this);
+  },
+
+  createSchema: function(options) {
+    //Prefer schema from options
+    if (options.schema) return _.result(options, 'schema');
+
+    //Then schema on model
+    var model = options.model;
+    if (model && model.schema) return _.result(model, 'schema');
+
+    //Then built-in schema
+    if (this.schema) return _.result(this, 'schema');
+
+    //Fallback to empty schema
+    return {};
+  },
+
+  _overridesDefaults: function (options) {
+    var constructor = this.constructor,
+      defaults = ['template', 'Fieldset', 'Field', 'NestedField'],
+      self = this;
+      defaults.forEach(function (def) {
+        self[def] = options[def] || self[def] || constructor[def];
+      });
   },
 
   /**
@@ -455,7 +459,7 @@ var Form = Backbone.View.extend({
       field.remove();
     });
 
-    return Backbone.View.prototype.remove.apply(this, arguments);
+    return Backbone.View.prototype.remove.call(this);
   }
 
 }, {

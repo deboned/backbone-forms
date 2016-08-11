@@ -130,9 +130,7 @@ Form.editors.Date = Form.editors.Base.extend({
         month = this.$month.val(),
         date = this.$date.val();
 
-    if (!year || !month || !date) return null;
-
-    return new Date(year, month, date);
+    return year && month && date ? new Date(year, month, date) : null;
   },
 
   /**

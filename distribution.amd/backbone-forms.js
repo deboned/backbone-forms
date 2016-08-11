@@ -69,7 +69,7 @@ var Form = Backbone.View.extend({
     _.extend(this, _.pick(options, 'data', 'idPrefix', 'templateData'));
 
     //Override defaults
-    var constructor = this.constructor;
+    // var constructor = this.constructor;
     this.template = options.template || this.template || constructor.template;
     this.Fieldset = options.Fieldset || this.Fieldset || constructor.Fieldset;
     this.Field = options.Field || this.Field || constructor.Field;

@@ -3,15 +3,13 @@
  */
 Form.editors.Hidden = Form.editors.Text.extend({
 
+  _defaultAttributes: {
+    type: 'hidden'
+  },
+
   defaultValue: '',
 
   noField: true,
-
-  constructor: function(options) {
-    Form.editors.Base.apply( this, arguments );
-
-    this.$el.attr('type', 'hidden');
-  },
 
   focus: function() {
 

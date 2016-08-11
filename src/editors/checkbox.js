@@ -5,6 +5,10 @@
  */
 Form.editors.Checkbox = Form.editors.Base.extend({
 
+  _defaultAttributes: {
+    type: 'checkbox'
+  },
+
   defaultValue: false,
 
   tagName: 'input',
@@ -21,12 +25,6 @@ Form.editors.Checkbox = Form.editors.Base.extend({
     }
   },
 
-  constructor: function(options) {
-    Form.editors.Base.apply( this, arguments );
-
-    this.$el.attr('type', 'checkbox');
-  },
-
   /**
    * Adds the editor to the DOM
    */
@@ -41,12 +39,8 @@ Form.editors.Checkbox = Form.editors.Base.extend({
   },
 
   setValue: function(value) {
-    if (value) {
-      this.$el.prop('checked', true);
-    }else{
-      this.$el.prop('checked', false);
-    }
     this.value = !!value;
+    this.$el.prop('checked', this.value);
   },
 
   focus: function() {

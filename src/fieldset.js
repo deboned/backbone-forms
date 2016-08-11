@@ -109,7 +109,7 @@ Form.Fieldset = Backbone.View.extend({
       field.remove();
     });
 
-    Backbone.View.prototype.remove.call(this);
+    return Backbone.View.prototype.remove.call(this);
   }
   
 }, {

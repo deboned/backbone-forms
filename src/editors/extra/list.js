@@ -83,8 +83,7 @@
       }
 
       this.setElement($el);
-      this.$el.attr('id', this.id);
-      this.$el.attr('name', this.key);
+      this.$el.attr({'id': this.id, 'name': this.key});
 
       if (this.hasFocus) this.trigger('blur', this);
 
@@ -296,14 +295,12 @@
     constructor: function(options) {
       Form.editors.Base.apply( this, arguments );
 
-      this.list = options.list;
+      _.extend(this, _.pick(options, 'list', 'value', 'key', 'form'));
+
       this.schema = options.schema || this.list.schema;
-      this.value = options.value;
       this.Editor = options.Editor || Form.editors.Text;
-      this.key = options.key;
       this.template = options.template || this.schema.itemTemplate || this.constructor.template;
       this.errorClassName = options.errorClassName || this.constructor.errorClassName;
-      this.form = options.form;
     },
 
     render: function() {

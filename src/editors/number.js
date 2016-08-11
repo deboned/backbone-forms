@@ -5,6 +5,10 @@
  */
 Form.editors.Number = Form.editors.Text.extend({
 
+  _defaultAttributes: {
+    type: 'number'
+  },
+
   defaultValue: 0,
 
   _defaultEvents: _.extend({}, Form.editors.Text.prototype._defaultEvents, {
@@ -16,8 +20,6 @@ Form.editors.Number = Form.editors.Text.extend({
     Form.editors.Base.apply( this, arguments );
 
     var schema = this.schema;
-
-    this.$el.attr('type', 'number');
 
     if (!schema || !schema.editorAttrs || !schema.editorAttrs.step) {
       // provide a default for `step` attr,

@@ -7,6 +7,10 @@ Form.editors.Text = Form.Editor.extend({
 
   tagName: 'input',
 
+  _defaultAttributes: {
+    type: 'text'
+  },
+
   defaultValue: '',
 
   previousValue: '',
@@ -36,12 +40,12 @@ Form.editors.Text = Form.Editor.extend({
     var schema = this.schema;
 
     //Allow customising text type (email, phone etc.) for HTML5 browsers
-    var type = 'text';
+    var type;
 
     if (schema && schema.editorAttrs && schema.editorAttrs.type) type = schema.editorAttrs.type;
     if (schema && schema.dataType) type = schema.dataType;
 
-    this.$el.attr('type', type);
+    type && this.$el.attr('type', type);
   },
 
   /**

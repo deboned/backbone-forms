@@ -77,12 +77,10 @@ var Form = Backbone.View.extend({
   },
 
   _overridesDefaults: function (options) {
-    var constructor = this.constructor,
-      defaults = ['template', 'Fieldset', 'Field', 'NestedField'],
-      self = this;
-      defaults.forEach(function (def) {
-        self[def] = options[def] || self[def] || constructor[def];
-      });
+    var defaults = ['template', 'Fieldset', 'Field', 'NestedField'];
+    defaults.forEach(function (def) {
+      this[def] = options[def] || this[def] || this.constructor[def];
+    }, this);
   },
 
   /**
@@ -180,65 +178,76 @@ var Form = Backbone.View.extend({
     }
   },
 
+  _renderElements: function (selector, $form, cb) {
+    var $ = Backbone.$,
+      self = this;
+    $form.find('[' + selector + ']').add($form).each(function(i, el) {
+        var $container = $(el),
+          selection = $container.attr(selector);
+
+        if (_.isUndefined(selection)) return;
+
+      cb.call(self, selection, $container);
+    });
+  },
+
+  _dataEditors: function ($form) {
+    var fields = this.fields;
+
+    this._renderElements('data-editors', $form, function (selection, $container) {
+        //Work out which fields to include
+        var keys = (selection == '*')
+          ? this.selectedFields || _.keys(fields)
+          : selection.split(',');
+
+        //Add them
+        _.each(keys, function(key) {
+          var field = fields[key];
+
+          $container.append(field.editor.render().el);
+        });
+    });
+  },
+
+  _dataFields: function ($form) {
+    var fields = this.fields;
+
+    this._renderElements('data-fields', $form, function (selection, $container) {
+      //Work out which fields to include
+      var keys = (selection == '*')
+        ? this.selectedFields || _.keys(fields)
+        : selection.split(',');
+
+      //Add them
+      _.each(keys, function(key) {
+        var field = fields[key];
+        $container.append(field.render().el);
+      });
+    });
+  },
+
+  _dataFieldsets: function ($form) {
+    this._renderElements('data-fieldsets', $form, function (selection, $container) {
+      _.each(this.fieldsets, function(fieldset) {
+        $container.append(fieldset.render().el);
+      }, this);
+    });
+  },
+
+  _renderedElemens: ['_dataEditors', '_dataFields', '_dataFieldsets'],
+
   render: function() {
-    var self = this,
-        fields = this.fields,
-        $ = Backbone.$;
+    var $ = Backbone.$;
 
     //Render form
     var $form = $($.trim(this.template(_.result(this, 'templateData'))));
 
     //Render standalone editors
-    $form.find('[data-editors]').add($form).each(function(i, el) {
-      var $container = $(el),
-          selection = $container.attr('data-editors');
-
-      if (_.isUndefined(selection)) return;
-
-      //Work out which fields to include
-      var keys = (selection == '*')
-        ? self.selectedFields || _.keys(fields)
-        : selection.split(',');
-
-      //Add them
-      _.each(keys, function(key) {
-        var field = fields[key];
-
-        $container.append(field.editor.render().el);
-      });
-    });
-
     //Render standalone fields
-    $form.find('[data-fields]').add($form).each(function(i, el) {
-      var $container = $(el),
-          selection = $container.attr('data-fields');
-
-      if (_.isUndefined(selection)) return;
-
-      //Work out which fields to include
-      var keys = (selection == '*')
-        ? self.selectedFields || _.keys(fields)
-        : selection.split(',');
-
-      //Add them
-      _.each(keys, function(key) {
-        var field = fields[key];
-
-        $container.append(field.render().el);
-      });
-    });
-
     //Render fieldsets
-    $form.find('[data-fieldsets]').add($form).each(function(i, el) {
-      var $container = $(el),
-          selection = $container.attr('data-fieldsets');
-
-      if (_.isUndefined(selection)) return;
-
-      _.each(self.fieldsets, function(fieldset) {
-        $container.append(fieldset.render().el);
-      });
-    });
+    this._renderedElemens.forEach(function (render) {
+      this[render]($form);
+    }, this);
 
     //Set the main element
     this.setElement($form);
@@ -260,8 +269,7 @@ var Form = Backbone.View.extend({
    * @return {Object}       Validation errors
    */
   validate: function(options) {
-    var self = this,
-        fields = this.fields,
+    var fields = this.fields,
         model = this.model,
         errors = {};
 

@@ -13,16 +13,10 @@ Form.editors.Checkbox = Form.editors.Base.extend({
 
   tagName: 'input',
 
-  _defaultEvents: {
-    'click':  function(event) {
-      this.trigger('change', this);
-    },
-    'focus':  function(event) {
-      this.trigger('focus', this);
-    },
-    'blur':   function(event) {
-      this.trigger('blur', this);
-    }
+  triggers: {
+    'click': 'change',
+    'focus': 'focus',
+    'blur': 'blur'
   },
 
   /**

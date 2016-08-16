@@ -20,14 +20,50 @@ Form.Editor = Form.editors.Base = Backbone.View.extend({
 
   _defaultAttributes: {},
 
+  configureTriggers: function() {
+    if (!this.triggers) { return; }
+
+    // Allow `triggers` to be configured as a function
+    var triggers = _.result(this, 'triggers');
+
+    // Configure the triggers, prevent default
+    // action and stop propagation of DOM events
+    var prepTriggers = _.reduce(triggers, function(events, value, key) {
+      events[key] = this._buildViewTrigger(value);
+      return events;
+    }, {}, this);
+
+    _.extend(this.events, prepTriggers);
+  },
+
+  _buildViewTrigger: function(triggerDef) {
+
+    var options = _.defaults({}, triggerDef, {
+      preventDefault: true,
+      stopPropagation: true
+    });
+
+    var eventName = _.isObject(triggerDef) ? options.event : triggerDef;
+
+    return function(e) {
+      if (e) {
+        e.preventDefault && options.preventDefault && e.preventDefault();
+        e.stopPropagation && options.stopPropagation && e.stopPropagation();
+      }
+
+      this.trigger(eventName, this);
+    };
+  },
+
   constructor: function(options) {
 
     this.events = _.extend({}, this._defaultEvents, this.events);
     this.attributes = _.extend({}, this._defaultAttributes, this.attributes);
 
+    this.configureTriggers();
     Backbone.View.apply( this, arguments );
 
-    var options = options || {};
+    options = options || {};
 
     //Set initial value
     if (options.model) {

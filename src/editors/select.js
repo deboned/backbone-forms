@@ -13,6 +13,12 @@ Form.editors.Select = Form.editors.Base.extend({
 
   previousValue: '',
 
+  triggers: {
+    'change': 'change',
+    'focus': 'focus',
+    'blur': 'blur'
+  },
+
   _defaultEvents: {
     'keyup':    'determineChange',
     'keypress': function(event) {
@@ -20,15 +26,6 @@ Form.editors.Select = Form.editors.Base.extend({
       setTimeout(function() {
         self.determineChange();
       }, 0);
-    },
-    'change': function(event) {
-      this.trigger('change', this);
-    },
-    'focus':  function(event) {
-      this.trigger('focus', this);
-    },
-    'blur':   function(event) {
-      this.trigger('blur', this);
     }
   },
 

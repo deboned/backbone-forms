@@ -72,11 +72,9 @@ Form.editors.Radio = Form.editors.Select.extend({
    * @return {String} HTML
    */
   _arrayToHtml: function (array) {
-    var self = this;
-
     var template = this.getTemplate(),
-        name = self.getName(),
-        id = self.id;
+        name = this.getName(),
+        id = this.id;
 
     var items = _.map(array, function(option, index) {
       var item = {

@@ -58,8 +58,7 @@
     },
 
     render: function() {
-      var self = this,
-          value = this.value || [],
+      var value = this.value || [],
           $ = Backbone.$;
 
       //Create main element
@@ -73,8 +72,8 @@
       //Add existing items
       if (value.length) {
         _.each(value, function(itemValue) {
-          self.addItem(itemValue);
-        });
+          this.addItem(itemValue);
+        }, this);
       }
 
       //If no existing items create an empty one, unless the editor specifies otherwise
@@ -524,8 +523,7 @@
     },
 
     openEditor: function() {
-      var self = this,
-          ModalForm = this.form.constructor;
+      var ModalForm = this.form.constructor;
 
       var form = this.modalForm = new ModalForm({
         schema: this.nestedSchema,

@@ -21,11 +21,11 @@ Form.editors.Radio = Form.editors.Select.extend({
     },
     'blur input[type=radio]': function() {
       if (!this.hasFocus) return;
-      var self = this;
-      setTimeout(function() {
-        if (self.$('input[type=radio]:focus')[0]) return;
-        self.trigger('blur', self);
-      }, 0);
+
+      setTimeout((function() {
+        if (this.$('input[type=radio]:focus')[0]) return;
+        this.trigger('blur', this);
+      }).bind(this), 0);
     }
   },
 

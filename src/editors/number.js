@@ -32,11 +32,10 @@ Form.editors.Number = Form.editors.Text.extend({
    * Check value is numeric
    */
   onKeyPress: function(event) {
-    var self = this,
-        delayedDetermineChange = function() {
-          setTimeout(function() {
-            self.determineChange();
-          }, 0);
+    var delayedDetermineChange = function() {
+          setTimeout((function() {
+            this.determineChange();
+          }).bind(this), 0);
         };
 
     //Allow backspace

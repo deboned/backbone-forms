@@ -100,10 +100,8 @@ Form.Editor = Form.editors.Base = Backbone.View.extend({
    * @api private
    */
   getName: function() {
-    var key = this.key || '';
-
     //Replace periods with underscores (e.g. for when using paths)
-    return key.replace(/\./g, '_');
+    return (this.key || '').replace(/\./g, '_');
   },
 
   /**

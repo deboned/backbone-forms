@@ -39,7 +39,7 @@ var Form = Backbone.View.extend({
     _.extend(this, _.pick(options, 'data', 'idPrefix', 'templateData'));
 
     //Override defaults
-    this._overridesDefaults(options);
+    this._overrideDefaults(options);
 
     //Check which fields will be included (defaults to all)
     var selectedFields = this.selectedFields = options.fields || _.keys(schema);
@@ -76,7 +76,7 @@ var Form = Backbone.View.extend({
     return {};
   },
 
-  _overridesDefaults: function (options) {
+  _overrideDefaults: function (options) {
     var defaults = ['template', 'Fieldset', 'Field', 'NestedField'];
     defaults.forEach(function (def) {
       this[def] = options[def] || this[def] || this.constructor[def];
@@ -140,7 +140,7 @@ var Form = Backbone.View.extend({
    */
   handleEditorEvent: function(event, editor) {
     //Re-trigger editor events on the form
-    var formEvent = editor.key+':'+event;
+    var formEvent = editor.key + ':' + event;
 
     this.trigger.call(this, formEvent, this, editor, Array.prototype.slice.call(arguments, 2));
 
@@ -157,24 +157,21 @@ var Form = Backbone.View.extend({
       case 'blur':
         if (this.hasFocus) {
           //TODO: Is the timeout etc needed?
-          var self = this;
-          setTimeout(function() {
-            var focusedField = _.find(self.fields, function(field) {
+          setTimeout((function() {
+            var focusedField = _.find(this.fields, function(field) {
               return field.editor.hasFocus;
             });
 
-            if (!focusedField) self.trigger('blur', self);
-          }, 0);
+            if (!focusedField) this.trigger('blur', this);
+          }).bind(this), 0);
         }
         break;
     }
   },
 
   templateData: function() {
-    var options = this.options;
-
     return {
-      submitButton: options.submitButton
+      submitButton: this.options.submitButton
     }
   },
 

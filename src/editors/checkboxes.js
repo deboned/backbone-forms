@@ -24,11 +24,11 @@ Form.editors.Checkboxes = Form.editors.Select.extend({
     },
     'blur input[type=checkbox]':  function() {
       if (!this.hasFocus) return;
-      var self = this;
-      setTimeout(function() {
-        if (self.$('input[type=checkbox]:focus')[0]) return;
-        self.trigger('blur', self);
-      }, 0);
+
+      setTimeout((function() {
+        if (this.$('input[type=checkbox]:focus')[0]) return;
+        this.trigger('blur', this);
+      }).bind(this), 0);
     }
   },
 

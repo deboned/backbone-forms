@@ -17,11 +17,10 @@ Form.editors.DateTime = Form.editors.Base.extend({
     },
     'blur select':    function() {
       if (!this.hasFocus) return;
-      var self = this;
-      setTimeout(function() {
-        if (self.$('select:focus')[0]) return;
-        self.trigger('blur', self);
-      }, 0);
+      setTimeout((function() {
+        if (this.$('select:focus')[0]) return;
+        this.trigger('blur', this);
+      }).bind(this), 0);
     }
   },
 

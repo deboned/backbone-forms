@@ -139,11 +139,10 @@
         }, self);
         item.editor.on('blur', function() {
           if (!this.hasFocus) return;
-          var self = this;
-          setTimeout(function() {
-            if (_.find(self.items, function(item) { return item.editor.hasFocus; })) return;
-            self.trigger('blur', self);
-          }, 0);
+          setTimeout((function() {
+            if (_.find(this.items, function(item) { return item.editor.hasFocus; })) return;
+            this.trigger('blur', this);
+          }).bind(this), 0);
         }, self);
 
         if (userInitiated || value) {
@@ -446,8 +445,6 @@
      * Render the list item representation
      */
     render: function() {
-      var self = this;
-
       //New items in the list are only rendered when the editor has been OK'd
       if (_.isEmpty(this.value)) {
         this.openEditor();
@@ -457,9 +454,9 @@
       else {
         this.renderSummary();
 
-        setTimeout(function() {
-          self.trigger('readyToAdd');
-        }, 0);
+        setTimeout((function() {
+          this.trigger('readyToAdd');
+        }).bind(this), 0);
       }
 
       if (this.hasFocus) this.trigger('blur', this);

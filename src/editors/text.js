@@ -24,10 +24,9 @@ Form.editors.Text = Form.Editor.extend({
   _defaultEvents: {
     'keyup':    'determineChange',
     'keypress': function(event) {
-      var self = this;
-      setTimeout(function() {
-        self.determineChange();
-      }, 0);
+      setTimeout((function() {
+        this.determineChange();
+      }).bind(this), 0);
     }
   },
 
